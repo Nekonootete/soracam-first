@@ -1,16 +1,23 @@
 import * as cdk from 'aws-cdk-lib/core';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { Construct } from 'constructs';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
 
 export class SoracamFirstStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // The code that defines your stack goes here
+    const myFunction = new lambda.Function(this, 'HelloWorldFunction', {
+      runtime: lambda.Runtime.RUBY_3_3,
+      handler: 'handler.handler',
+      code: lambda.Code.fromAsset('lambda'),
+    });
 
-    // example resource
-    // const queue = new sqs.Queue(this, 'SoracamFirstQueue', {
-    //   visibilityTimeout: cdk.Duration.seconds(300)
-    // });
+    const functionUrl = myFunction.addFunctionUrl({
+      authType: lambda.FunctionUrlAuthType.NONE,
+    });
+
+    new cdk.CfnOutput(this, 'FunctionUrl', {
+      value: functionUrl.url,
+    });
   }
 }
