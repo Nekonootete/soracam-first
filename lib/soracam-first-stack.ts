@@ -9,7 +9,15 @@ export class SoracamFirstStack extends cdk.Stack {
     const myFunction = new lambda.Function(this, 'HelloWorldFunction', {
       runtime: lambda.Runtime.RUBY_3_3,
       handler: 'handler.handler',
-      code: lambda.Code.fromAsset('lambda'),
+      code: lambda.Code.fromAsset('lambda', {
+        bundling: {
+          image: lambda.Runtime.RUBY_3_3.bundlingImage,
+          command: [
+            'bash', '-c',
+            'bundle config set --local path vendor/bundle && bundle install && cp -r . /asset-output/',
+          ]
+        }
+      }),
     });
 
     const functionUrl = myFunction.addFunctionUrl({
