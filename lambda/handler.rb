@@ -95,7 +95,7 @@ def notify_slack(result)
   channel = ENV.fetch('SLACK_CHANNEL_ID')
   text = result ? 'ごはんが入っています。' : 'ごはんが入っていません。'
 
-  Slack::Web::Client.new(token: token).chat_postMessage(
+  Slack::Web::Client.new(token:).chat_postMessage(
     channel:,
     text:
   )
